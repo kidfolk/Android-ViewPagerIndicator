@@ -126,4 +126,8 @@
         <!-- View background -->
         <attr name="android:background"/>
     </declare-styleable>
+
+    <declare-styleable name="IconPageIndicator">
+        <attr name="spacer" format="dimension"/>
+    </declare-styleable>
 </resources>

@@ -17,6 +17,8 @@
 package com.viewpagerindicator;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -25,8 +27,9 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
-import static android.view.ViewGroup.LayoutParams.FILL_PARENT;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
@@ -35,6 +38,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  */
 public class IconPageIndicator extends HorizontalScrollView implements PageIndicator {
     private final IcsLinearLayout mIconsLayout;
+    private final int mSpacer;
 
     private ViewPager mViewPager;
     private OnPageChangeListener mListener;
@@ -49,8 +53,12 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
         super(context, attrs);
         setHorizontalScrollBarEnabled(false);
 
+        TypedArray a = context.obtainStyledAttributes(attrs,R.styleable.IconPageIndicator,
+          R.attr.vpiIconPageIndicatorStyle,0);
+        mSpacer = a.getDimensionPixelSize(R.styleable.IconPageIndicator_spacer,10);
+        a.recycle();
         mIconsLayout = new IcsLinearLayout(context, R.attr.vpiIconPageIndicatorStyle);
-        addView(mIconsLayout, new LayoutParams(WRAP_CONTENT, FILL_PARENT, Gravity.CENTER));
+        addView(mIconsLayout, new LayoutParams(WRAP_CONTENT, MATCH_PARENT, Gravity.CENTER));
     }
 
     private void animateToIcon(final int position) {
@@ -131,7 +139,10 @@ public class IconPageIndicator extends HorizontalScrollView implements PageIndic
         for (int i = 0; i < count; i++) {
             ImageView view = new ImageView(getContext(), null, R.attr.vpiIconPageIndicatorStyle);
             view.setImageResource(iconAdapter.getIconResId(i));
-            mIconsLayout.addView(view);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(WRAP_CONTENT,
+                WRAP_CONTENT);
+            params.rightMargin = mSpacer;
+            mIconsLayout.addView(view,params);
         }
         if (mSelectedIndex > count) {
             mSelectedIndex = count - 1;
